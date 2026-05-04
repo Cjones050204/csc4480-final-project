@@ -111,7 +111,7 @@ create table studentGrades(
 create table gradebook(
     studentID varchar2(6),
     CRN varchar2(5),
-    finalLetterGrade decimal(3,2)
+    finalLetterGrade varchar2(15)
 );
 
 
@@ -185,6 +185,7 @@ select * from courses;
 insert into sections values('76317', 'CS1000', 'BS1001');
 insert into sections values('76318', 'CS1000', 'ST2001');
 insert into sections values('54626', 'HS2004', 'TS3001');
+insert into sections values('76320', 'CS1001', 'MJ4001');
 select * from sections;
 
 insert into gradeScale values('BS1001', 0.05, 0.15, 0.40, 0.20, 0.20);
@@ -195,26 +196,31 @@ select * from gradeScale;
 
 insert into participation values('76317', 'CP1000', 1.00, 0.95, 0.98, 0.95, 1.00, NULL);
 insert into participation values('76317', 'AFW400', 0.85, 0.90, 0.00, 0.90, 1.00, NULL);
+insert into participation values('76320', 'GS6000', 1.00, 1.00, 1.00, 1.00, 1.00, NULL);
 update participation
     set participationFinal = (week1 + week2 + week3 + week4 + week5) / 5;
 
 insert into homework values('76317', 'CP1000', 1.00, 1.00, 1.00, NULL);
 insert into homework values('76317', 'AFW400', 0.95, 0.90, 0.80, NULL);
+insert into homework values('76320', 'GS6000', 0.94, 0.78, 0.93, NULL);
 update homework
     set homeworkFinal = (homework1 + homework2 + homework3) / 3;
 
 insert into tests values('76317', 'CP1000', 0.98, 0.95, NULL);
 insert into tests values('76317', 'AFW400', 0.95, 0.80, NULL);
+insert into tests values('76320', 'GS6000', 0.99, 0.98, NULL);
 update tests
     set testFinal = (test1 + test2) / 2;
 
 insert into quizzes values('76317', 'CP1000', 0.95, 0.92, NULL);
 insert into quizzes values('76317', 'AFW400', 0.87, 0.94, NULL);
+insert into quizzes values('76320', 'GS6000', 0.91, 0.88, NULL);
 update quizzes
     set quizFinal = (quiz1 + quiz2) / 2;
 
 insert into projects values('76317', 'CP1000', 0.97);
 insert into projects values('76317', 'AFW400', 0.89);
+insert into projects values ('76320', 'GS6000', 0.92);
 
 -- ============================================================
 -- POPULATE ADDITIONAL DATA (added by Clarence Potente)
@@ -395,12 +401,52 @@ select * from studentGrades;
 insert into gradebook (studentID, CRN, finalLetterGrade)
 select studentID, CRN,
     case
-        when finalGrade >= 0.90 then 4.00
-        when finalGrade >= 0.80 then 3.00
-        when finalGrade >= 0.70 then 2.00
-        when finalGrade >= 0.60 then 1.00
-        else 0.00
+        when finalGrade >= 0.94 then 'A'
+        when finalGrade >= 0.90 then 'A-'
+        when finalGrade >= 0.87 then 'B+'
+        when finalGrade >= 0.84 then 'B'
+        when finalGrade >= 0.80 then 'B-'
+        when finalGrade >= 0.77 then 'C+'
+        when finalGrade >= 0.74 then 'C'
+        when finalGrade >= 0.70 then 'C-'
+        when finalGrade >= 0.67 then 'D+'
+        when finalGrade >= 0.64 then 'D'
+        when finalGrade >= 0.60 then 'D-'
+        else 'F'
     end
 from studentGrades;
 
 select * from gradebook;
+
+-- COMMANDS
+-- Create
+    insert into students values ('AB7000', 'Alice', 'Brown');
+-- Read
+    select * from students where studentID = 'AB7000';
+-- Update
+    update students set lastName = 'Green' where studentID = 'AB7000';
+    select * from students where studentID = 'AB7000';
+
+    select * from quizzes where studentID = 'CJ2000' and CRN = '76318';
+    update quizzes
+    set quiz1 = 0.92
+    where studentID = 'CJ2000' and CRN = '76318';
+    
+-- CALCULATE FINAL GRADES AGAIN
+update participation
+    set participationFinal = (week1 + week2 + week3 + week4 + week5) / 5;
+
+update homework
+    set homeworkFinal = (homework1 + homework2 + homework3) / 3;
+
+update tests
+    set testFinal = (test1 + test2) / 2;
+
+update quizzes
+    set quizFinal = (quiz1 + quiz2) / 2;
+
+update studentGrades
+    set finalGrade = (participation + homework + tests + quizzes + projects);
+
+-- SHOW UPDATED GRADE
+select * from quizzes where studentID = 'CJ2000' and CRN = '76318';
