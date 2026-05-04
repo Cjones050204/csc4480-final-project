@@ -447,21 +447,43 @@ update quizzes
 
 -- Recompute weighted columns in studentGrades before summing finalGrade
 update studentGrades sg
-    set (sg.participation, sg.homework, sg.tests, sg.quizzes, sg.projects) = (
-        select
-            p.participationFinal * gs.participation,
-            h.homeworkFinal      * gs.homework,
-            t.testFinal          * gs.tests,
-            q.quizFinal          * gs.quizzes,
-            pr.onlyProject       * gs.projects
-        from sections sc, gradeScale gs, participation p, homework h, tests t, quizzes q, projects pr
-        where sc.CRN         = sg.CRN
-        and sc.profID         = gs.profID
-        and p.CRN             = sg.CRN and p.studentID  = sg.studentID
-        and h.CRN             = sg.CRN and h.studentID  = sg.studentID
-        and t.CRN             = sg.CRN and t.studentID  = sg.studentID
-        and q.CRN             = sg.CRN and q.studentID  = sg.studentID
-        and pr.CRN            = sg.CRN and pr.studentID = sg.studentID
+    set sg.participation = (
+        select p.participationFinal * gs.participation
+        from sections sc, gradeScale gs, participation p
+        where sc.CRN = sg.CRN and sc.profID = gs.profID
+        and p.CRN = sg.CRN and p.studentID = sg.studentID
+    );
+
+update studentGrades sg
+    set sg.homework = (
+        select h.homeworkFinal * gs.homework
+        from sections sc, gradeScale gs, homework h
+        where sc.CRN = sg.CRN and sc.profID = gs.profID
+        and h.CRN = sg.CRN and h.studentID = sg.studentID
+    );
+
+update studentGrades sg
+    set sg.tests = (
+        select t.testFinal * gs.tests
+        from sections sc, gradeScale gs, tests t
+        where sc.CRN = sg.CRN and sc.profID = gs.profID
+        and t.CRN = sg.CRN and t.studentID = sg.studentID
+    );
+
+update studentGrades sg
+    set sg.quizzes = (
+        select q.quizFinal * gs.quizzes
+        from sections sc, gradeScale gs, quizzes q
+        where sc.CRN = sg.CRN and sc.profID = gs.profID
+        and q.CRN = sg.CRN and q.studentID = sg.studentID
+    );
+
+update studentGrades sg
+    set sg.projects = (
+        select pr.onlyProject * gs.projects
+        from sections sc, gradeScale gs, projects pr
+        where sc.CRN = sg.CRN and sc.profID = gs.profID
+        and pr.CRN = sg.CRN and pr.studentID = sg.studentID
     );
 
 update studentGrades
