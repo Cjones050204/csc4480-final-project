@@ -100,4 +100,4 @@ The grading scale for the `gradebook` table:
 |---|---|
 | Clarence Potente | Table creation, foreign keys, grade scale setup, studentGrades insert logic |
 | John Ahn | studentGrades query design and inline documentation |
-| Christopher Jones | Additional data population (History section, remaining student enrollments), gradebook final grade computation, README |
+| Christopher Jones | Additional data population (History section, remaining student enrollments), gradebook final grade computation, gradeScale primary key fix, recalculate block fix, README |
