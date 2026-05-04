@@ -195,76 +195,68 @@ select * from gradeScale;
 
 insert into participation values('76317', 'CP1000', 1.00, 0.95, 0.98, 0.95, 1.00, NULL);
 insert into participation values('76317', 'AFW400', 0.85, 0.90, 0.00, 0.90, 1.00, NULL);
-insert into participation values('76318', 'CJ2000', 0.80, 0.73, 1.00, 0.93, 1.00, NULL);
-insert into participation values('76318', 'JA3000', 1.00, 0.90, 0.89, 0.60, 1.00, NULL);
 update participation
     set participationFinal = (week1 + week2 + week3 + week4 + week5) / 5;
-select * from participation;
 
 insert into homework values('76317', 'CP1000', 1.00, 1.00, 1.00, NULL);
 insert into homework values('76317', 'AFW400', 0.95, 0.90, 0.80, NULL);
-insert into homework values('76318', 'CJ2000', 0.90, 0.80, 1.00, NULL);
-insert into homework values('76318', 'JA3000', 0.95, 1.00, 0.92, NULL);
 update homework
     set homeworkFinal = (homework1 + homework2 + homework3) / 3;
-select * from homework;
 
 insert into tests values('76317', 'CP1000', 0.98, 0.95, NULL);
 insert into tests values('76317', 'AFW400', 0.95, 0.80, NULL);
-insert into tests values('76318', 'CJ2000', 0.96, 0.90, NULL);
-insert into tests values('76318', 'JA3000', 0.83, 0.90, NULL);
 update tests
     set testFinal = (test1 + test2) / 2;
-select * from tests;
 
 insert into quizzes values('76317', 'CP1000', 0.95, 0.92, NULL);
 insert into quizzes values('76317', 'AFW400', 0.87, 0.94, NULL);
-insert into quizzes values('76318', 'CJ2000', 0.75, 1.00, NULL);
-insert into quizzes values('76318', 'JA3000', 0.80, 0.90, NULL);
 update quizzes
     set quizFinal = (quiz1 + quiz2) / 2;
-select * from quizzes;
 
 insert into projects values('76317', 'CP1000', 0.97);
 insert into projects values('76317', 'AFW400', 0.89);
+
+-- ============================================================
+-- POPULATE ADDITIONAL DATA (added by Clarence Potente)
+-- Enrolls CJ2000 and JA3000 into CS section 76318 (Samir Tally)
+-- ============================================================
+
+-- PARTICIPATION
+insert into participation values('76318', 'CJ2000', 0.80, 0.73, 1.00, 0.93, 1.00, NULL);
+insert into participation values('76318', 'JA3000', 1.00, 0.90, 0.89, 0.60, 1.00, NULL);
+update participation
+    set participationFinal = (week1 + week2 + week3 + week4 + week5) / 5
+    where participationFinal is NULL;
+
+-- HOMEWORK
+insert into homework values('76318', 'CJ2000', 0.90, 0.80, 1.00, NULL);
+insert into homework values('76318', 'JA3000', 0.95, 1.00, 0.92, NULL);
+update homework
+    set homeworkFinal = (homework1 + homework2 + homework3) / 3
+    where homeworkFinal is NULL;
+
+-- TESTS
+insert into tests values('76318', 'CJ2000', 0.96, 0.90, NULL);
+insert into tests values('76318', 'JA3000', 0.83, 0.90, NULL);
+update tests
+    set testFinal = (test1 + test2) / 2
+    where testFinal is NULL;
+
+-- QUIZZES
+insert into quizzes values('76318', 'CJ2000', 0.75, 1.00, NULL);
+insert into quizzes values('76318', 'JA3000', 0.80, 0.90, NULL);
+update quizzes
+    set quizFinal = (quiz1 + quiz2) / 2
+    where quizFinal is NULL;
+
+-- PROJECTS
 insert into projects values('76318', 'CJ2000', 0.88);
 insert into projects values('76318', 'JA3000', 0.79);
-select * from projects;
-
--- john learned how all of this works, read added comments for flow
-insert into studentGrades (CRN, studentID, participation, homework, tests, quizzes, projects) -- all of these values are basically variables for the final studentGrade tables
-select sections.CRN,                                        -- goes into CRN
-    participation.studentID,                                -- value is inserted into studentID^
-    participation.participationFinal * gradeScale.participation, -- calculated values are inserted into participation
-    homework.homeworkFinal * gradeScale.homework,           -- homework
-    tests.testFinal * gradeScale.tests,                     -- tests
-    quizzes.quizFinal * gradeScale.quizzes,                 -- quizzes
-    projects.onlyProject * gradeScale.projects              -- projects
-from sections, participation, gradeScale, homework, tests, quizzes, projects -- allows the usage of the data from these tables for the select above
-
--- the WHERE is important so duplicates or unwanted values aren't calculated
-
--- makes sure all CRN is accounted for, but problem is full cross-products
-where sections.CRN = participation.CRN
-and sections.CRN = homework.CRN
-and sections.CRN = tests.CRN
-and sections.CRN = quizzes.CRN
-and sections.CRN = projects.CRN
--- makes sure studentID in each section/CRN is only mentioned once per assignment
-and participation.studentID = homework.studentID
-and participation.studentID = tests.studentID
-and participation.studentID = quizzes.studentID
-and participation.studentID = projects.studentID
-and sections.profID = gradeScale.profID; -- links the professors grading scale to the sections
-
-update studentGrades
-    set finalGrade = (participation + homework + tests + quizzes + projects);
-select * from studentGrades;
 
 
 -- ============================================================
 -- POPULATE ADDITIONAL DATA (added by Christopher Jones)
--- Enrolls TD5000 and GS6000 into History section (54626)
+-- Enrolls CJ2000 and GS6000 into History section (54626)
 -- Enrolls CP1000 into History section (54626)
 -- Enrolls TD5000 into CS section 76317 (Bob Smith)
 -- Enrolls GS6000 into CS section 76318 (Samir Tally)
@@ -357,39 +349,42 @@ insert into projects values('76317', 'TD5000', 0.71);
 -- Section 76318 - GS6000
 insert into projects values('76318', 'GS6000', 0.92);
 
+-- PRINT TABLES
+select * from participation;
+select * from homework;
+select * from tests;
+select * from quizzes;
+select * from projects;
 
--- STUDENT GRADES (weighted components for new enrollments)
+-- STUDENT GRADES
+-- (john's work, read added comments for flow)
+insert into studentGrades (CRN, studentID, participation, homework, tests, quizzes, projects) -- all of these values are basically variables for the final studentGrade tables
+select sections.CRN,                                        -- goes into CRN
+    participation.studentID,                                -- value is inserted into studentID^
+    participation.participationFinal * gradeScale.participation, -- calculated values are inserted into participation
+    homework.homeworkFinal * gradeScale.homework,           -- homework
+    tests.testFinal * gradeScale.tests,                     -- tests
+    quizzes.quizFinal * gradeScale.quizzes,                 -- quizzes
+    projects.onlyProject * gradeScale.projects              -- projects
+from sections, participation, gradeScale, homework, tests, quizzes, projects -- allows the usage of the data from these tables for the select above
 
-insert into studentGrades (CRN, studentID, participation, homework, tests, quizzes, projects)
-select sections.CRN,
-    participation.studentID,
-    participation.participationFinal * gradeScale.participation,
-    homework.homeworkFinal           * gradeScale.homework,
-    tests.testFinal                  * gradeScale.tests,
-    quizzes.quizFinal                * gradeScale.quizzes,
-    projects.onlyProject             * gradeScale.projects
-from sections, participation, gradeScale, homework, tests, quizzes, projects
-where sections.CRN          = participation.CRN
-and sections.CRN            = homework.CRN
-and sections.CRN            = tests.CRN
-and sections.CRN            = quizzes.CRN
-and sections.CRN            = projects.CRN
+-- the WHERE is important so duplicates or unwanted values aren't calculated
+
+-- makes sure all CRN is accounted for, but problem is full cross-products
+where sections.CRN = participation.CRN
+and sections.CRN = homework.CRN
+and sections.CRN = tests.CRN
+and sections.CRN = quizzes.CRN
+and sections.CRN = projects.CRN
+-- makes sure studentID in each section/CRN is only mentioned once per assignment
 and participation.studentID = homework.studentID
 and participation.studentID = tests.studentID
 and participation.studentID = quizzes.studentID
 and participation.studentID = projects.studentID
-and sections.profID         = gradeScale.profID
--- skip rows already inserted above
-and not exists (
-    select 1 from studentGrades sg
-    where sg.CRN = sections.CRN
-    and sg.studentID = participation.studentID
-);
+and sections.profID = gradeScale.profID; -- links the professors grading scale to the sections
 
 update studentGrades
-    set finalGrade = (participation + homework + tests + quizzes + projects)
-    where finalGrade is NULL;
-
+    set finalGrade = (participation + homework + tests + quizzes + projects);
 select * from studentGrades;
 
 
