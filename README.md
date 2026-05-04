@@ -75,15 +75,22 @@ Each professor uses a different grade weighting. For example:
 
 ## Grading Scale
 
-Final grades in the `gradebook` table are stored as GPA points:
+The grading scale for the `gradebook` table:
 
-| Grade | Minimum Score | GPA Points |
-|---|---|---|
-| A | 90% | 4.00 |
-| B | 80% | 3.00 |
-| C | 70% | 2.00 |
-| D | 60% | 1.00 |
-| F | Below 60% | 0.00 |
+| Grade | Minimum Score |
+|---|---|
+| A | 94% |
+| A- | 90% |
+| B+ | 87% |
+| B | 84% |
+| B- | 80% |
+| C+ | 77% |
+| C | 74% |
+| C- | 70% |
+| D+ | 67% |
+| D | 64% |
+| D- | 60% |
+| F | Below 60% |
 
 ---
 
